@@ -1,4 +1,4 @@
-package com.todo.auth.auth;
+package com.todo.auth.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

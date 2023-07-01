@@ -1,3 +1,5 @@
+server:
+  port: 8090
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/springtodo
@@ -6,10 +8,15 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:
