@@ -21,7 +21,7 @@ public class Todo {
     private String header;
     private String description;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreated;
+    private Date targetDate;
     @Enumerated(EnumType.STRING)
     private TodoStatus todoStatus;
     @Column(name = "username")

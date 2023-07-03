@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(name = "/api/v1/todo")
+@RequestMapping("/api/v1/todo")
 public class TodoController {
     @Autowired
     private TodoService todoService;
-    private User user;
     private final Logger logger = LoggerFactory.getLogger(TodoController.class);
+
 
     @GetMapping
     public ResponseEntity<String> Hello(){
