@@ -1,11 +1,10 @@
 package com.todo.auth.security;
 
+
+import com.todo.auth.email.EmailRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,4 +27,17 @@ public class AuthenticationController {
         System.out.println(authenticate.getToken());
         return ResponseEntity.ok(authenticate);
     }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest request) {
+        System.out.println(request.getEmail());
+        service.forgotPassword(request);
+        return ResponseEntity.ok("Ссылка для сброса пароля отправлена на вашу электронную почту");
+    }
+
+    @PostMapping("reset-password/{email}")
+    public ResponseEntity<String> resetPassword(@PathVariable String email, @RequestBody ResetPasswordRequest request){
+        service.resetPassword(email, request);
+        return ResponseEntity.ok("Восстановление пароля успешно");
+    }
+
 }

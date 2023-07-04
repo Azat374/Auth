@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8080
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/springtodo
@@ -15,6 +15,17 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    username: balgaliev.azat.03@gmail.com
+    password: nldpfmniiwuhuked
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
 logging:
   level:
     org:

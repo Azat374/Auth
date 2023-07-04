@@ -37,11 +37,16 @@ public class TodoController {
     }
 
     //GET
+//    @GetMapping("/Todos")
+//    public List<Todo> getAllTodos() {
+//        return todoService.getTodos();
+//    }
     @GetMapping("/Todos")
-    public List<Todo> getAllTodos() {
-        return todoService.getTodos();
+    public ResponseEntity<List<TodoResponse>> getTodos(@RequestParam(required = false) String status,
+                                                       @RequestParam(required = false) String keyword){
+        List<TodoResponse> todos = todoService.getTodos(status, keyword);
+        return ResponseEntity.ok(todos);
     }
-    @GetMapping("/TodoById/{id}")
     public Todo findTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
@@ -53,6 +58,24 @@ public class TodoController {
     public List<Todo> findTodosByUsername(@PathVariable String username) {
         return todoService.getTodosForUser(username);
     }
+    //Сегоднешние задачи
+    @GetMapping("/Todos/today")
+    public ResponseEntity<List<TodoResponse>> getTodayTodos() {
+        List<TodoResponse> todos = todoService.getTodayTodos();
+        return ResponseEntity.ok(todos);
+    }
+    //Нереализованные задачи с датой реализации прошедшего дня
+    @GetMapping("/Todos/overdue")
+    public ResponseEntity<List<TodoResponse>> getOverdueTodos() {
+        List<TodoResponse> todos = todoService.getOverdueTodos();
+        return ResponseEntity.ok(todos);
+    }
+
+//    @PostMapping("/Todos/daily-summary")
+//    public ResponseEntity<String> sendDailySummary() {
+//        todoService.sendDailySummary();
+//        return ResponseEntity.ok("Daily summary sent successfully");
+//    }
 
     //PUT
     @PutMapping("/update")
