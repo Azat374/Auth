@@ -1,11 +1,13 @@
 package com.todo.auth.todo;
 
+import com.todo.auth.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -20,12 +22,13 @@ public class Todo {
     private Long id;
     private String header;
     private String description;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date targetDate;
+    @Temporal(TemporalType.DATE)
+    private LocalDate targetDate;
     @Enumerated(EnumType.STRING)
     private TodoStatus todoStatus;
-    @Column(name = "username")
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 }

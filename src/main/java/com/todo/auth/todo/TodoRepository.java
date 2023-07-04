@@ -1,25 +1,27 @@
 package com.todo.auth.todo;
 
+import com.todo.auth.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
-    List<Todo> findAllByUsername(String username);
+    List<Todo> findAllByUser(User user);
+    List<Todo> findAllByUserId(Long userId);
     Todo findByHeader(String header);
     List<Todo> findAll();
 
-    List<Todo> findByTargetDate(Date date);
+    List<Todo> findByTargetDate(LocalDate date);
 
-    List<Todo> findByTargetDateBeforeAndTodoStatusNot(Date today, TodoStatus todoStatus);
+    List<Todo> findByTargetDateBeforeAndTodoStatusNot(LocalDate today, TodoStatus todoStatus);
 
-    List<Todo> findByTodoStatusAndTargetDate(TodoStatus todoStatus, Date today);
+    List<Todo> findByTodoStatusAndTargetDate(TodoStatus todoStatus, LocalDate today);
 
-    List<Todo> findByTodoStatusAndHeaderContainingIgnoreCase(TodoStatus todoStatus, String keyword);
+    List<Todo> findByUserAndTodoStatusAndHeaderContainingIgnoreCase(User user, TodoStatus todoStatus, String keyword);
 
-    List<Todo> findByTodoStatus(TodoStatus todoStatus);
+    List<Todo> findByUserAndTodoStatus(User user, TodoStatus todoStatus);
 
-    List<Todo> findByHeaderContainingIgnoreCase(String keyword);
+    List<Todo> findByUserAndHeaderContainingIgnoreCase(User user, String keyword);
 }
 

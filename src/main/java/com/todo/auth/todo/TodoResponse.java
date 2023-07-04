@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Data
 @Builder
@@ -16,8 +17,7 @@ public class TodoResponse {
     private Long id;
     private String header;
     private String description;
-    private Date targetDate;
+    private LocalDate targetDate;
     @Enumerated(EnumType.STRING)
     private TodoStatus todoStatus;
-    private String username;
 }
