@@ -17,8 +17,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
     host: smtp.gmail.com
-    username: balgaliev.azat.03@gmail.com
-    password: nldpfmniiwuhuked
+    username: email
+    password: password
     port: 587
     properties:
       mail:
