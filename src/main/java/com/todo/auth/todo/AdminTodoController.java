@@ -31,4 +31,9 @@ public class AdminTodoController {
     public Todo findTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
+
+    @GetMapping("/users")
+    public List<User> getUsers(){
+        return userRepository.findAll();
+    }
 }
