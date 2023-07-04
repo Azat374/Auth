@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+    private String photoUrl;
     @Enumerated(EnumType.STRING)
     private Role role;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

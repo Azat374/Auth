@@ -25,14 +25,14 @@ public class TodoController {
     }
 
     //POST
-    @PostMapping("/addTodo")
+    @PostMapping("/add-todo")
     public Todo addTodo(@RequestBody TodoResponse Todo) {
 
         logger.info("Todo object {}", Todo.toString());
         return todoService.saveTodo(getUserFromToken(), Todo);
     }
 
-    @PostMapping("/addTodos")
+    @PostMapping("/add-todos")
     public List<Todo> addTodos(@RequestBody List<TodoResponse> Todos) {
 
         return todoService.saveTodos(Todos, getUserFromToken());
