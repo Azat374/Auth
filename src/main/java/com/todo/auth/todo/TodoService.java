@@ -82,7 +82,7 @@ public class TodoService {
     //DELETE
     public String deleteTodo(Long id) {
         todoRepository.deleteById(id);
-        return id + " id -> course removed";
+        return id + " id -> todo removed";
     }
 
     public List<TodoResponse> getTodayTodos() {
