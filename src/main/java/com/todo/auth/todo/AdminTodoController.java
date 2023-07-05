@@ -22,16 +22,19 @@ public class AdminTodoController {
         this.userRepository = userRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/allTodos")
     public List<Todo> allTodos(){
         return todoService.allTodos();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Todo findTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public List<User> getUsers(){
         return userRepository.findAll();

@@ -71,15 +71,5 @@ public class ApplicationConfig {
         return mailSender;
     }
 
-    @Bean
-    FirebaseMessaging firebaseMessaging() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource("serviceAccountKey.json").getInputStream());
-        FirebaseOptions firebaseOptions = FirebaseOptions
-                .builder()
-                .setCredentials(googleCredentials)
-                .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
-        return FirebaseMessaging.getInstance(app);
-    }
+
 }

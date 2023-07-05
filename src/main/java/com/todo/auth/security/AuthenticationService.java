@@ -40,7 +40,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-
+        user.getAuthorities();
         var jwtToken = jwtService.generateToken(user);
         repository.save(user);
         return AuthenticationResponse.builder()
