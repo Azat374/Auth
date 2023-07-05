@@ -1,5 +1,7 @@
 package com.todo.auth.security;
 
+import com.todo.auth.user.Role;
+import com.todo.auth.user.RoleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +16,5 @@ public class RegisterRequest {
     private String lastname;
     private String email;
     private String password;
+    private Role role;
 }

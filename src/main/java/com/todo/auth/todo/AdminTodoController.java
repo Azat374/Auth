@@ -5,12 +5,13 @@ import com.todo.auth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/v1/admin")
 public class AdminTodoController {
     private TodoService todoService;
@@ -22,19 +23,16 @@ public class AdminTodoController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/allTodos")
     public List<Todo> allTodos(){
         return todoService.allTodos();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Todo findTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public List<User> getUsers(){
         return userRepository.findAll();

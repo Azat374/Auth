@@ -45,7 +45,7 @@ public class TodoService {
     public List<TodoResponse> getTodos(@RequestParam(required = false) String status,
                                @RequestParam(required = false) String keyword, User user){
 
-//        List<Todo> todos = todoRepository.findAllByUser(user.getId());
+
         List<Todo> todos;
         if (status != null && keyword != null) {
             todos = todoRepository.findByUserAndTodoStatusAndHeaderContainingIgnoreCase(user, TodoStatus.valueOf(status), keyword);

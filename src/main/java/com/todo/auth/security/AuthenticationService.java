@@ -3,12 +3,8 @@ package com.todo.auth.security;
 import com.todo.auth.config.JwtService;
 import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
-import com.todo.auth.exception.InvalidTokenException;
-import com.todo.auth.user.Role;
-import com.todo.auth.user.User;
-import com.todo.auth.user.UserRepository;
+import com.todo.auth.user.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +12,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Collections;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-
-    private final UserRepository repository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -38,11 +33,12 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
-        user.getAuthorities();
+        RoleEntity roles = roleRepository.findByName("USER").get();
+        user.setRoles(Collections.singletonList(roles));
         var jwtToken = jwtService.generateToken(user);
-        repository.save(user);
+        userRepository.save(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -56,7 +52,7 @@ public class AuthenticationService {
 
                 )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -67,7 +63,7 @@ public class AuthenticationService {
     public ResponseEntity<String> forgotPassword(EmailRequest request) {
         String email = request.getEmail();
         // Получить пользователя по электронной почте
-        Optional<User> userOptional = repository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isEmpty()) {
             // Пользователь с указанной электронной почтой не найден
@@ -86,7 +82,7 @@ public class AuthenticationService {
         if (request.getNewPassword() == request.getConfirmPassword()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пароль не совпадает");
         }
-        User user = repository.findByEmail(email).get();
+        User user = userRepository.findByEmail(email).get();
         user.setPassword(request.getNewPassword());
         return ResponseEntity.ok("Новый пароль успешно установлен");
 
