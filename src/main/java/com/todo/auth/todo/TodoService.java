@@ -1,14 +1,10 @@
 package com.todo.auth.todo;
 
-import com.fasterxml.jackson.annotation.OptBoolean;
 import com.todo.auth.email.EmailService;
 import com.todo.auth.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -82,12 +78,12 @@ public class TodoService {
     //DELETE
     public String deleteTodo(Long id) {
         todoRepository.deleteById(id);
-        return id + " id -> todo removed";
+        return id + " id -> course removed";
     }
 
-    public List<TodoResponse> getTodayTodos() {
+    public List<TodoResponse> getTodayTodos(User user) {
         LocalDate today = LocalDate.now();
-        List<Todo> todos = todoRepository.findByTargetDate(today);
+        List<Todo> todos = todoRepository.findByUserAndTargetDate(user, today);
 
         return mapToTodoResponses(todos);
     }
@@ -106,15 +102,15 @@ public class TodoService {
     }
 
 
-    public List<TodoResponse> getOverdueTodos() {
+    public List<TodoResponse> getOverdueTodos(User user) {
         LocalDate today = LocalDate.now();
-        List<Todo> todos = todoRepository.findByTargetDateBeforeAndTodoStatusNot(today, TodoStatus.FINISH);
+        List<Todo> todos = todoRepository.findByUserAndTargetDateBeforeAndTodoStatusNot(user, today, TodoStatus.FINISH);
         return mapToTodoResponses(todos);
     }
 
-    public ResponseEntity<String> sendDailySummary() {
+    public ResponseEntity<String> sendDailySummary(User user) {
         LocalDate today = LocalDate.now();
-        List<Todo> todos = todoRepository.findByTodoStatusAndTargetDate(TodoStatus.FINISH, today);
+        List<Todo> todos = todoRepository.findByUserAndTodoStatusAndTargetDate(user, TodoStatus.FINISH, today);
         if (todos.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Список выполненных задач пуст");
         }

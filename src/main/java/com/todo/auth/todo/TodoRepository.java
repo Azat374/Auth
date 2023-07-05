@@ -10,13 +10,15 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByUser(User user);
     List<Todo> findAllByUserId(Long userId);
     Todo findByHeader(String header);
+
+
     List<Todo> findAll();
 
-    List<Todo> findByTargetDate(LocalDate date);
+    List<Todo> findByUserAndTargetDate(User user, LocalDate date);
 
-    List<Todo> findByTargetDateBeforeAndTodoStatusNot(LocalDate today, TodoStatus todoStatus);
+    List<Todo> findByUserAndTargetDateBeforeAndTodoStatusNot(User user, LocalDate today, TodoStatus todoStatus);
 
-    List<Todo> findByTodoStatusAndTargetDate(TodoStatus todoStatus, LocalDate today);
+    List<Todo> findByUserAndTodoStatusAndTargetDate(User user, TodoStatus todoStatus, LocalDate today);
 
     List<Todo> findByUserAndTodoStatusAndHeaderContainingIgnoreCase(User user, TodoStatus todoStatus, String keyword);
 

@@ -3,10 +3,6 @@ package com.todo.auth.todo;
 import com.todo.auth.user.User;
 import com.todo.auth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +10,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminTodoController {
-    private TodoService todoService;
-    private UserRepository userRepository;
+    private final TodoService todoService;
+    private final UserRepository userRepository;
 
     @Autowired
     public AdminTodoController(TodoService todoService, UserRepository userRepository) {
@@ -36,5 +32,10 @@ public class AdminTodoController {
     @GetMapping("/users")
     public List<User> getUsers(){
         return userRepository.findAll();
+    }
+
+    @GetMapping("/listTodoByUsername/{userId}")
+    public List<Todo> findTodosByUser(@PathVariable Long userId) {
+        return todoService.getTodosForUser(userId);
     }
 }

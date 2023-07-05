@@ -14,14 +14,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/todo")
 public class TodoController {
-    @Autowired
-    private TodoService todoService;
+    private final TodoService todoService;
     private final Logger logger = LoggerFactory.getLogger(TodoController.class);
+    @Autowired
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     private User getUserFromToken(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)auth.getPrincipal();
-        return user;
+        return (User)auth.getPrincipal();
     }
 
     //POST
@@ -51,20 +53,17 @@ public class TodoController {
     public Todo findTodoByName(@PathVariable String name) {
         return todoService.getTodoByName(name);
     }
-    @GetMapping("/listTodoByUsername/{username}")
-    public List<Todo> findTodosByUser(@PathVariable Long userId) {
-        return todoService.getTodosForUser(userId);
-    }
+
     //Сегоднешние задачи
     @GetMapping("/today")
     public ResponseEntity<List<TodoResponse>> getTodayTodos() {
-        List<TodoResponse> todos = todoService.getTodayTodos();
+        List<TodoResponse> todos = todoService.getTodayTodos(getUserFromToken());
         return ResponseEntity.ok(todos);
     }
     //Нереализованные задачи с датой реализации прошедшего дня
     @GetMapping("/overdue")
     public ResponseEntity<List<TodoResponse>> getOverdueTodos() {
-        List<TodoResponse> todos = todoService.getOverdueTodos();
+        List<TodoResponse> todos = todoService.getOverdueTodos(getUserFromToken());
         return ResponseEntity.ok(todos);
     }
 
@@ -75,7 +74,7 @@ public class TodoController {
 
     @PostMapping("/daily-summary")
     public ResponseEntity<String> sendDailySummary() {
-        return todoService.sendDailySummary();
+        return todoService.sendDailySummary(getUserFromToken());
     }
 
     //PUT
