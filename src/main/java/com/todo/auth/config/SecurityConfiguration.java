@@ -28,6 +28,8 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
+                .requestMatchers("/hello/**")
+                .permitAll()
                 .requestMatchers("/api/v1/auth/**")
                 .permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

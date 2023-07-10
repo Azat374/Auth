@@ -34,10 +34,10 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.USER)
                 .build();
-        RoleEntity roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+//        RoleEntity roles = roleRepository.findByName("USER").get();
+//        user.setRoles(Collections.singletonList(roles));
         var jwtToken = jwtService.generateToken(user);
         userRepository.save(user);
         return AuthenticationResponse.builder()
