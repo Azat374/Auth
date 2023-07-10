@@ -2,9 +2,13 @@ package com.todo.auth.todo;
 
 import com.todo.auth.email.EmailService;
 import com.todo.auth.user.User;
+import com.todo.auth.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,18 +20,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TodoService {
-
+    private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final EmailService emailService;
 
-    public Todo saveTodo(User user, TodoResponse todoResponse) {
+    private User getUserFromToken(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User)auth.getPrincipal();
+    }
+
+    public Todo saveTodo(TodoResponse todoResponse) {
+        User user = getUserFromToken();
         Todo todo = toTodo(todoResponse, user);
         System.out.println(todo.toString());
         return todoRepository.save(todo);
     }
 
     //Optional!
-    public List<Todo> saveTodos(List<TodoResponse> todoList, User user) {
+    public List<Todo> saveTodos(List<TodoResponse> todoList) {
+        User user = getUserFromToken();
         List<Todo> todos = toTodos(todoList, user);
         System.out.println(todos.toString());
         return todoRepository.saveAll(todos);
@@ -39,9 +50,9 @@ public class TodoService {
     }
 
     public List<TodoResponse> getTodos(@RequestParam(required = false) String status,
-                               @RequestParam(required = false) String keyword, User user){
+                               @RequestParam(required = false) String keyword){
 
-
+        User user = getUserFromToken();
         List<Todo> todos;
         if (status != null && keyword != null) {
             todos = todoRepository.findByUserAndTodoStatusAndHeaderContainingIgnoreCase(user, TodoStatus.valueOf(status), keyword);
@@ -81,7 +92,8 @@ public class TodoService {
         return id + " id -> course removed";
     }
 
-    public List<TodoResponse> getTodayTodos(User user) {
+    public List<TodoResponse> getTodayTodos() {
+        User user = getUserFromToken();
         LocalDate today = LocalDate.now();
         List<Todo> todos = todoRepository.findByUserAndTargetDate(user, today);
 
@@ -102,7 +114,8 @@ public class TodoService {
     }
 
 
-    public List<TodoResponse> getOverdueTodos(User user) {
+    public List<TodoResponse> getOverdueTodos() {
+        User user = getUserFromToken();
         LocalDate today = LocalDate.now();
         List<Todo> todos = todoRepository.findByUserAndTargetDateBeforeAndTodoStatusNot(user, today, TodoStatus.FINISH);
         return mapToTodoResponses(todos);
@@ -128,6 +141,17 @@ public class TodoService {
 
         emailService.sendMail(recipientEmail, subject, message);
         return ResponseEntity.ok("Ежедневная отчет о сделанных задач успешно отправлена");
+    }
+    @Scheduled(cron = "0 25 10 * * ?")
+    private void sendAllSummary(){
+        List<User> users = userRepository.findAll();
+        for(User user : users){
+            if (user.getEmail().equals("balgaliazik@gmail.com")){
+                System.out.println(sendDailySummary(user));
+                System.out.println("Отчет для " + user.getFirstname() + " " + user.getLastname() + " отправлен");
+            }
+        }
+
     }
 
     public ResponseEntity<String> statusChange(Long id, String status) {

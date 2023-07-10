@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -79,7 +80,7 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<String> resetPassword(String email, ResetPasswordRequest request) {
-        if (request.getNewPassword() == request.getConfirmPassword()){
+        if (Objects.equals(request.getNewPassword(), request.getConfirmPassword())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пароль не совпадает");
         }
         User user = userRepository.findByEmail(email).get();

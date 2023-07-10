@@ -1,12 +1,9 @@
 package com.todo.auth.todo;
 
-import com.todo.auth.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,23 +18,18 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    private User getUserFromToken(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User)auth.getPrincipal();
-    }
-
     //POST
     @PostMapping("/add-todo")
     public Todo addTodo(@RequestBody TodoResponse Todo) {
 
         logger.info("Todo object {}", Todo.toString());
-        return todoService.saveTodo(getUserFromToken(), Todo);
+        return todoService.saveTodo(Todo);
     }
 
     @PostMapping("/add-todos")
     public List<Todo> addTodos(@RequestBody List<TodoResponse> Todos) {
 
-        return todoService.saveTodos(Todos, getUserFromToken());
+        return todoService.saveTodos(Todos);
     }
 
 
@@ -45,7 +37,7 @@ public class TodoController {
     @GetMapping()
     public ResponseEntity<List<TodoResponse>> getTodos(@RequestParam(required = false) String status,
                                                        @RequestParam(required = false) String keyword){
-        List<TodoResponse> todos = todoService.getTodos(status, keyword,getUserFromToken());
+        List<TodoResponse> todos = todoService.getTodos(status, keyword);
         return ResponseEntity.ok(todos);
     }
 
@@ -57,13 +49,13 @@ public class TodoController {
     //Сегоднешние задачи
     @GetMapping("/today")
     public ResponseEntity<List<TodoResponse>> getTodayTodos() {
-        List<TodoResponse> todos = todoService.getTodayTodos(getUserFromToken());
+        List<TodoResponse> todos = todoService.getTodayTodos();
         return ResponseEntity.ok(todos);
     }
     //Нереализованные задачи с датой реализации прошедшего дня
     @GetMapping("/overdue")
     public ResponseEntity<List<TodoResponse>> getOverdueTodos() {
-        List<TodoResponse> todos = todoService.getOverdueTodos(getUserFromToken());
+        List<TodoResponse> todos = todoService.getOverdueTodos();
         return ResponseEntity.ok(todos);
     }
 
@@ -72,10 +64,10 @@ public class TodoController {
         return todoService.statusChange(id, status);
     }
 
-    @PostMapping("/daily-summary")
-    public ResponseEntity<String> sendDailySummary() {
-        return todoService.sendDailySummary(getUserFromToken());
-    }
+//    @PostMapping("/daily-summary")
+//    public ResponseEntity<String> sendDailySummary() {
+//        return todoService.sendDailySummary(getUserFromToken());
+//    }
 
     //PUT
     @PutMapping("/update")
