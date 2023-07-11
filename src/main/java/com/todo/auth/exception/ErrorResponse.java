@@ -4,10 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
+@Getter
+@Setter
 public class ErrorResponse {
-
     private int errorCode;
     private LocalDateTime timestamp;
     private String message;

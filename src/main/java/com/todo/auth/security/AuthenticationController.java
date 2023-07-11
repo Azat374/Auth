@@ -29,7 +29,6 @@ public class AuthenticationController {
     }
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest request) {
-        System.out.println(request.getEmail());
         service.forgotPassword(request);
         return ResponseEntity.ok("Ссылка для сброса пароля отправлена на вашу электронную почту");
     }

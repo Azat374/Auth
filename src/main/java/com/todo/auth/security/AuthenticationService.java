@@ -3,6 +3,8 @@ package com.todo.auth.security;
 import com.todo.auth.config.JwtService;
 import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
+import com.todo.auth.exception.NotFoundException;
+import com.todo.auth.exception.RestExceptionHandler;
 import com.todo.auth.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
-
+    private final RestExceptionHandler restExceptionHandler;
 
     public AuthenticationResponse register(RegisterRequest request) {
         log.debug("Trying to authorization {}", request);
@@ -47,6 +49,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         log.debug("Trying to authentication {}", request);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -54,12 +57,12 @@ public class AuthenticationService {
 
                 )
         );
+
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
-
     }
 
     public ResponseEntity<String> forgotPassword(EmailRequest request) {
