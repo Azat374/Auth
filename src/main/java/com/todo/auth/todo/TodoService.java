@@ -142,11 +142,11 @@ public class TodoService {
         emailService.sendMail(recipientEmail, subject, message);
         return ResponseEntity.ok("Ежедневная отчет о сделанных задач успешно отправлена");
     }
-    @Scheduled(cron = "0 25 10 * * ?")
+    @Scheduled(cron = "0 0 22 * * ?")
     private void sendAllSummary(){
         List<User> users = userRepository.findAll();
         for(User user : users){
-            if (user.getEmail().equals("balgaliazik@gmail.com")){
+            if (user.getEmail().equals("balgaliazik@gmail.com")){// это чтобы только себе отправить(нужно удалить)
                 System.out.println(sendDailySummary(user));
                 System.out.println("Отчет для " + user.getFirstname() + " " + user.getLastname() + " отправлен");
             }
