@@ -64,10 +64,6 @@ public class TodoController {
         return todoService.statusChange(id, status);
     }
 
-    @PostMapping("/k")
-    public ResponseEntity<String> k(){
-        return ResponseEntity.ok("k");
-    }
 //    @PostMapping("/daily-summary")
 //    public ResponseEntity<String> sendDailySummary() {
 //        return todoService.sendDailySummary(getUserFromToken());

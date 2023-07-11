@@ -5,6 +5,7 @@ import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
 import com.todo.auth.user.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -29,6 +30,7 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse register(RegisterRequest request) {
+        log.debug("Trying to authorization {}", request);
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -36,8 +38,6 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-//        RoleEntity roles = roleRepository.findByName("USER").get();
-//        user.setRoles(Collections.singletonList(roles));
         var jwtToken = jwtService.generateToken(user);
         userRepository.save(user);
         return AuthenticationResponse.builder()
@@ -46,6 +46,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        log.debug("Trying to authentication {}", request);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -62,6 +63,7 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<String> forgotPassword(EmailRequest request) {
+        log.debug("Trying to send mail for reset password {}", request);
         String email = request.getEmail();
         // Получить пользователя по электронной почте
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -80,6 +82,7 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<String> resetPassword(String email, ResetPasswordRequest request) {
+        log.debug("Trying to reset password {}", request);
         if (Objects.equals(request.getNewPassword(), request.getConfirmPassword())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пароль не совпадает");
         }

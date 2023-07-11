@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,6 @@ public class JwtService {
 
 
     private Claims extractAllClaims(String token){
-//        return Jwts.parser().setSigningKey(getSighInKey()).parseClaimsJws(token).getBody();
         return Jwts.parserBuilder().setSigningKey(getSighInKey()).build().parseClaimsJws(token).getBody();
     }
 

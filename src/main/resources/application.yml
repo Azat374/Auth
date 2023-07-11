@@ -28,6 +28,7 @@ spring:
           auth: true
 logging:
   level:
-    org:
-      springframework:
-        security=DEBUG:
+    org.springframework.security: DEBUG
+    root: INFO
+    org.springframework: INFO
+    com.todo.auth: DEBUG
