@@ -8,13 +8,13 @@ services:
     environment:
       - DATABASE_URL=jdbc:postgresql://auth-springtodo-1:5432/springtodo
     ports:
-      - 8090:8090
+      - 8080:8080
     depends_on:
       - springtodo
   springtodo:
     image: postgres:15.3
     ports:
-      - 5457:5432
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_USER=root
