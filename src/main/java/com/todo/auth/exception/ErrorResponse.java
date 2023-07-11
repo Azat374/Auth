@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ErrorResponse {
-    private Long id;
+
     private int errorCode;
     private LocalDateTime timestamp;
-    private String errorMessage;
+    private String message;
+    public ErrorResponse(int errorCode, String message) {
+        this.errorCode = errorCode;
+        this.timestamp = LocalDateTime.now();
+        this.message = message;
+    }
 }
