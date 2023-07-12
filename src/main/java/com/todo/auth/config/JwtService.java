@@ -1,4 +1,4 @@
-package com.todo.auth.security.config;
+package com.todo.auth.config;
 
 import com.todo.auth.user.User;
 import io.jsonwebtoken.Claims;

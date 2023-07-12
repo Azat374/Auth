@@ -1,4 +1,4 @@
-package com.todo.auth.security.config;
+package com.todo.auth.config;
 
 
 import jakarta.servlet.FilterChain;

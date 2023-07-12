@@ -1,6 +1,6 @@
 package com.todo.auth.security;
 
-import com.todo.auth.security.config.JwtService;
+import com.todo.auth.config.JwtService;
 import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
 import com.todo.auth.exception.BadRequestException;
