@@ -2,6 +2,7 @@ package com.todo.auth.exception;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RestExceptionHandler{
 
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(NotFoundException ex) {
+    public ErrorResponse handleNotFoundException(BadCredentialsException ex) {
         return new ErrorResponse(404, ex.getMessage());
     }
 
