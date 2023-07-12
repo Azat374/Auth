@@ -1,3 +1,4 @@
+## Аутентификация
 /api/v1/auth/forgot-password - востановление пароля
 
 /api/v1/auth/login - вход
@@ -5,6 +6,8 @@
 /api/v1/auth/register - регистрация
 
 /api/v1/auth/reset-password/{email} - это придеть почту и обновление пароля
+
+## TODO
 
 /api/v1/todo - получение todo(можно применять фильры)
 
