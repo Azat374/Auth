@@ -1,7 +1,5 @@
 package com.todo.auth.security;
 
-import com.todo.auth.user.Role;
-import com.todo.auth.user.RoleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
