@@ -74,10 +74,9 @@ public class AuthenticationService {
     public ResponseEntity<String> forgotPassword(EmailRequest request) {
         log.debug("Trying to send mail for reset password {}", request);
         String email = request.getEmail();
-        // Получить пользователя по электронной почте
-        Optional<User> userOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty()) {
+        // Получить пользователя по электронной почте
+        if (userRepository.findByEmail(email).isEmpty()) {
             throw new NotFoundException("User not found");
             //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Пользователь с указанной электронной почтой не найден");
         }
@@ -85,7 +84,7 @@ public class AuthenticationService {
 
         String link = "http://localhost:8080/api/v1/auth/reset-password/" + email;
 
-        // Отправить новый пароль пользователю (например, по электронной почте)
+        // Отправить ссылку пользователю (например, по электронной почте)
         emailService.sendMail(email, "Ссылка для сброса пароля", "Привет,\n\nВот ваша ссылка: " + link);
 
         return ResponseEntity.ok("Ссылка успешно отправлен");
