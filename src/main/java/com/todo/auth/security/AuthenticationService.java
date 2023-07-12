@@ -5,14 +5,12 @@ import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
 import com.todo.auth.exception.BadRequestException;
 import com.todo.auth.exception.NotFoundException;
-import com.todo.auth.exception.RestExceptionHandler;
 import com.todo.auth.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +25,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
-//    private final RestExceptionHandler restExceptionHandler;
 
 
     public AuthenticationResponse register(RegisterRequest request) {

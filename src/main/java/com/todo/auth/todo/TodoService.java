@@ -155,8 +155,7 @@ public class TodoService {
 
         String subject = "Ежедневное резюме выполненных задач";
         String message = messageBuilder.toString();
-
-        String recipientEmail = "balgaliazik@gmail.com"; // Замените на фактический адрес получателя
+        String recipientEmail = user.getEmail(); // Замените на фактический адрес получателя
 
         emailService.sendMail(recipientEmail, subject, message);
         return ResponseEntity.ok("Ежедневная отчет о сделанных задач успешно отправлена");

@@ -14,7 +14,13 @@ public class RestExceptionHandler{
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(BadCredentialsException ex) {
+    public ErrorResponse handleBadCredentialsException(BadCredentialsException ex) {
+        return new ErrorResponse(404, ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(NotFoundException ex) {
         return new ErrorResponse(404, ex.getMessage());
     }
 
