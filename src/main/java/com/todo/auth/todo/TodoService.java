@@ -1,6 +1,7 @@
 package com.todo.auth.todo;
 
 import com.todo.auth.email.EmailService;
+import com.todo.auth.exception.NotFoundException;
 import com.todo.auth.user.User;
 import com.todo.auth.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,11 @@ public class TodoService {
     private User getUserFromToken(){
         log.debug("Trying to get user from jwt token");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User)auth.getPrincipal();
+        User user = (User)auth.getPrincipal();
+        if(user == null){
+            throw new NotFoundException("User not found");
+        }
+        return user;
     }
 
     public Todo saveTodo(TodoResponse todoResponse) {

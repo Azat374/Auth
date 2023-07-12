@@ -3,11 +3,13 @@ package com.todo.auth.security;
 import com.todo.auth.config.JwtService;
 import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
+import com.todo.auth.exception.BadRequestException;
 import com.todo.auth.exception.NotFoundException;
 import com.todo.auth.exception.RestExceptionHandler;
 import com.todo.auth.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ public class AuthenticationService {
     private final EmailService emailService;
     private final RestExceptionHandler restExceptionHandler;
 
+
     public AuthenticationResponse register(RegisterRequest request) {
         log.debug("Trying to authorization {}", request);
         var user = User.builder()
@@ -47,7 +50,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws NotFoundException {
         log.debug("Trying to authentication {}", request);
 
         authenticationManager.authenticate(
@@ -58,8 +61,11 @@ public class AuthenticationService {
                 )
         );
 
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var user = userRepository.findByEmail(request.getEmail());
+        if(user.isEmpty()){
+            throw new NotFoundException("User not found");
+        }
+        var jwtToken = jwtService.generateToken(user.get());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -72,9 +78,10 @@ public class AuthenticationService {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isEmpty()) {
-            // Пользователь с указанной электронной почтой не найден
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Пользователь с указанной электронной почтой не найден");
+            throw new NotFoundException("User not found");
+            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Пользователь с указанной электронной почтой не найден");
         }
+
 
         String link = "http://localhost:8080/api/v1/auth/reset-password/" + email;
 
@@ -86,10 +93,15 @@ public class AuthenticationService {
 
     public ResponseEntity<String> resetPassword(String email, ResetPasswordRequest request) {
         log.debug("Trying to reset password {}", request);
-        if (Objects.equals(request.getNewPassword(), request.getConfirmPassword())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пароль не совпадает");
+        var userOptional = userRepository.findByEmail(email);
+        if(userOptional.isEmpty()){
+            throw new NotFoundException("User not found");
         }
-        User user = userRepository.findByEmail(email).get();
+        User user = userOptional.get();
+        if (Objects.equals(request.getNewPassword(), request.getConfirmPassword())){
+            throw new BadRequestException("Password doesn't match");
+            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пароль не совпадает");
+        }
         user.setPassword(request.getNewPassword());
         return ResponseEntity.ok("Новый пароль успешно установлен");
 
