@@ -30,11 +30,10 @@ public class TodoService {
     private User getUserFromToken(){
         log.debug("Trying to get user from jwt token");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)auth.getPrincipal();
-        if(user == null){
-            throw new NotFoundException("User not found");
+        if (auth.getPrincipal() instanceof User user) {
+            return user;
         }
-        return user;
+        throw new NotFoundException("User not found");
     }
 
     public Todo saveTodo(TodoResponse todoResponse) {
@@ -44,7 +43,6 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    //Optional!
     public List<Todo> saveTodos(List<TodoResponse> todoList) {
         log.debug("Trying to save todos {}", todoList);
         User user = getUserFromToken();
@@ -104,7 +102,7 @@ public class TodoService {
     public String deleteTodo(Long id) {
         log.debug("Trying to delete todo");
         todoRepository.deleteById(id);
-        return id + " id -> course removed";
+        return id + " id -> todo removed";
     }
 
     public List<TodoResponse> getTodayTodos() {
@@ -177,7 +175,7 @@ public class TodoService {
         log.debug("Trying to change status todo: id - {}, changedStatus - {}", id, status);
         Optional<Todo> todoOptional = todoRepository.findById(id);
         if(todoOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Задача не найдена");
+            throw new NotFoundException("Todo not found");
         }
         Todo todo = todoOptional.get();
         TodoStatus todoStatus = Enum.valueOf(TodoStatus.class, status);

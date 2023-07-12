@@ -1,3 +1,4 @@
+SECRET_KEY: h47Iy/IJzMcI3gTXXaKZLVKcoypkSaHd52la8XhgZV0sVTaqc6z797MkdnlK/SyD\n
 server:
   port: 8080
 spring:
@@ -26,6 +27,9 @@ spring:
           starttls:
             enable: true
           auth: true
+        transport:
+          protocol: smtp
+        debug: true
 logging:
   level:
     org.springframework.security: DEBUG

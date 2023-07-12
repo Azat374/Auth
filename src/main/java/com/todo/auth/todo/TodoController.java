@@ -63,11 +63,6 @@ public class TodoController {
         return todoService.statusChange(id, status);
     }
 
-//    @PostMapping("/daily-summary")
-//    public ResponseEntity<String> sendDailySummary() {
-//        return todoService.sendDailySummary(getUserFromToken());
-//    }
-
     //PUT
     @PutMapping("/update")
     public Todo updateTodo(@RequestBody Todo Todo)
@@ -82,8 +77,4 @@ public class TodoController {
     public String deleteTodo(@PathVariable Long id) {
         return todoService.deleteTodo(id);
     }
-
-
-
-
 }
