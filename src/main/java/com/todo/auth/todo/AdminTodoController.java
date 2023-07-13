@@ -3,6 +3,7 @@ package com.todo.auth.todo;
 import com.todo.auth.user.User;
 import com.todo.auth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class AdminTodoController {
     }
 
     @GetMapping("/allTodos")
-    public List<Todo> allTodos(){
+    public Page<Todo> allTodos(@RequestParam("page") int page, @RequestParam("size") int size){
         return todoService.allTodos();
     }
 

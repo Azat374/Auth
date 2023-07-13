@@ -1,10 +1,9 @@
 package com.todo.auth.todo;
 
-import com.todo.auth.exception.ErrorResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +19,13 @@ public class TodoController {
     }
 
     //POST
-    @PostMapping("/add-todo")
-    public Todo addTodo(@RequestBody TodoResponse Todo) {
+    @PostMapping
+    public Todo addTodo(@RequestBody @Valid TodoRequestPayload Todo) {
         return todoService.saveTodo(Todo);
     }
 
-    @PostMapping("/add-todos")
-    public List<Todo> addTodos(@RequestBody List<TodoResponse> Todos) {
+    @PostMapping("/batch")
+    public List<Todo> addTodos(@RequestBody @Valid @NotEmpty List<@Valid TodoRequestPayload> Todos) {
 
         return todoService.saveTodos(Todos);
     }
@@ -34,32 +33,32 @@ public class TodoController {
 
     //GET
     @GetMapping()
-    public ResponseEntity<List<TodoResponse>> getTodos(@RequestParam(required = false) String status,
-                                                       @RequestParam(required = false) String keyword){
-        List<TodoResponse> todos = todoService.getTodos(status, keyword);
+    public ResponseEntity<List<TodoRequestPayload>> getTodos(@RequestParam(required = false) String status,
+                                                             @RequestParam(required = false) String keyword){
+        List<TodoRequestPayload> todos = todoService.getTodos(status, keyword);
         return ResponseEntity.ok(todos);
     }
 
-    @GetMapping("/TodoByName/{name}")
+    @GetMapping("/by-name/{name}")
     public Todo findTodoByName(@PathVariable String name) {
         return todoService.getTodoByName(name);
     }
 
     //Сегоднешние задачи
     @GetMapping("/today")
-    public ResponseEntity<List<TodoResponse>> getTodayTodos() {
-        List<TodoResponse> todos = todoService.getTodayTodos();
+    public ResponseEntity<List<TodoRequestPayload>> getTodayTodos() {
+        List<TodoRequestPayload> todos = todoService.getTodayTodos();
         return ResponseEntity.ok(todos);
     }
     //Нереализованные задачи с датой реализации прошедшего дня
     @GetMapping("/overdue")
-    public ResponseEntity<List<TodoResponse>> getOverdueTodos() {
-        List<TodoResponse> todos = todoService.getOverdueTodos();
+    public ResponseEntity<List<TodoRequestPayload>> getOverdueTodos() {
+        List<TodoRequestPayload> todos = todoService.getOverdueTodos();
         return ResponseEntity.ok(todos);
     }
 
     @PostMapping("/status-change/{id}")
-    public ResponseEntity<String> statusChange(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<String> statusChange(@PathVariable Long id, @RequestParam TodoStatus status) {
         return todoService.statusChange(id, status);
     }
 
