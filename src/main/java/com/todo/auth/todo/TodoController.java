@@ -1,8 +1,10 @@
 package com.todo.auth.todo;
 
+import com.todo.auth.exception.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/v1/todo")
 public class TodoController {
     private final TodoService todoService;
-    private final Logger logger = LoggerFactory.getLogger(TodoController.class);
     @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
@@ -21,8 +22,6 @@ public class TodoController {
     //POST
     @PostMapping("/add-todo")
     public Todo addTodo(@RequestBody TodoResponse Todo) {
-
-        logger.info("Todo object {}", Todo.toString());
         return todoService.saveTodo(Todo);
     }
 
@@ -64,15 +63,6 @@ public class TodoController {
         return todoService.statusChange(id, status);
     }
 
-    @PostMapping("/k")
-    public ResponseEntity<String> k(){
-        return ResponseEntity.ok("k");
-    }
-//    @PostMapping("/daily-summary")
-//    public ResponseEntity<String> sendDailySummary() {
-//        return todoService.sendDailySummary(getUserFromToken());
-//    }
-
     //PUT
     @PutMapping("/update")
     public Todo updateTodo(@RequestBody Todo Todo)
@@ -87,5 +77,4 @@ public class TodoController {
     public String deleteTodo(@PathVariable Long id) {
         return todoService.deleteTodo(id);
     }
-
 }

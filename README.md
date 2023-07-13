@@ -1,7 +1,38 @@
-1,balgaliev.azat.03@gmail.com,Admin,Admin,$2a$10$04Sa5CwXZ7sWsNyZC91iR.CeZjkhOXdioCohaVP98Eb5AqCYrpafi,ADMIN,adminImage.png
-2,balgaliazik@gmail.com,Azat,Balgali,$2a$10$04Sa5CwXZ7sWsNyZC91iR.CeZjkhOXdioCohaVP98Eb5AqCYrpafi,USER,
-102,ernazarbigali@gmail.com,Ernazar,Bigali,$2a$10$sIb.o9b8rS7gmQgnnj6XIuiaSMudFW9jI636DiTT6iXFgeLPJUcaW,USER,
-152,azamatorakbaev@gmail.com,Azamat,Orakbaev,$2a$10$eRY504JAPbiJK3681DH1k.OTNC9wlUheZIhog4ilMOtpwazVcFkP.,USER,
-202,aibekov@gmail.com,Aibek,Aibekov,$2a$10$axTJWmxNSqmgz9zWcsVnAOaNUX/5wmWztmGnKhVe292Zqcs8m616O,USER,
+## Аутентификация
+/api/v1/auth/forgot-password - востановление пароля
 
+/api/v1/auth/login - вход
 
+/api/v1/auth/register - регистрация
+
+/api/v1/auth/reset-password/{email} - это придеть почту и обновление пароля
+
+## TODO
+
+/api/v1/todo - получение todo(можно применять фильры)
+
+/api/v1/todo/TodoByName/{name} - поиск todo
+
+/api/v1/todo/add-todo - добавление todo
+
+/api/v1/todo/add-todos - добовление несколько todo
+
+/api/v1/todo/delete/{id}  - удаление через айди
+
+/api/v1/todo/overdue - незашершенные вчерашние todo
+
+/api/v1/todo/status-change/{id} - обновление статуса
+
+/api/v1/todo/today - сегоднешние todo
+
+/api/v1/todo/update - изменение todo
+
+## Для админа
+
+/api/v1/admin/allTodos
+
+/api/v1/admin/listTodoByUsername/{userId}
+
+/api/v1/admin/users
+
+/api/v1/admin/{id}
