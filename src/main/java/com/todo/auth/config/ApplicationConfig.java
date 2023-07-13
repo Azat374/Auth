@@ -38,6 +38,7 @@ public class ApplicationConfig {
     private String smtpTransportProtocol;
     @Value("${spring.mail.properties.mail.debug)")
     private String smtpDebug;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userRepository.findByEmail(username)
