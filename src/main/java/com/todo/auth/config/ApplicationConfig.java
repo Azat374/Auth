@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Properties;
-
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
@@ -29,13 +28,13 @@ public class ApplicationConfig {
     private String smtpPassword;
     @Value("${spring.mail.host)")
     private String smtpHost;
-    @Value("${spring.mail.port)")
+    @Value("${spring.mail.port}")
     private int smtpPort;
     @Value("${spring.mail.properties.mail.smtp.starttls.enable)")
     private String smtpStarttls;
     @Value("${spring.mail.properties.mail.smtp.auth)")
     private String smtpAuth;
-    @Value("${spring.mail.properties.mail.smtp.transport.protocol)")
+    @Value("${spring.mail.protocol)")
     private String smtpTransportProtocol;
     @Value("${spring.mail.properties.mail.debug)")
     private String smtpDebug;
