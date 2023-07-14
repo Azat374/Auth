@@ -74,6 +74,9 @@ public class TodoService {
         final int start = (int)pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), todoRequestPayloads.size());
         final Page<TodoRequestPayload> page = new PageImpl<>(todoRequestPayloads.subList(start, end), pageable, todoRequestPayloads.size());
+        if(page.getContent().isEmpty()){
+            throw new NotFoundException("Page not found");
+        }
         return page;
     }
 
@@ -92,8 +95,7 @@ public class TodoService {
         return todoRepository.findAllByUserId(userId);
     }
 
-    //PUT
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Todo updateTodo(Todo todo) {
         log.debug("Trying to update todo {}", todo);
         Todo existingTodo = todoRepository.findById(todo.getId()).orElse(null);
