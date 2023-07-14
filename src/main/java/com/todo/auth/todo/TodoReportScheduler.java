@@ -2,6 +2,7 @@ package com.todo.auth.todo;
 
 import com.todo.auth.user.User;
 import com.todo.auth.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,14 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class TodoReportScheduler {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TodoReportService reportService;
+    private final UserRepository userRepository;
+    private final TodoReportService reportService;
 
     @Scheduled(cron = "0 0 22 * * ?")
     private void sendAllSummary() {
