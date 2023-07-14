@@ -7,10 +7,9 @@ import com.todo.auth.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,12 +27,14 @@ public class TodoService {
     private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final EmailService emailService;
+    private final TodoMapperImpl todoMapper;
 
     @Transactional
     public Todo saveTodo(TodoRequestPayload todoResponse) {
         log.debug("Trying to save todo {}", todoResponse);
         User user = getUserFromToken();
-        Todo todo = toTodo(todoResponse, user);
+        Todo todo = todoMapper.toTodo(todoResponse);
+        todo.setUser(user);
         return todoRepository.save(todo);
     }
 
@@ -55,8 +55,9 @@ public class TodoService {
     }
 
     // TODO pageable request - https://www.baeldung.com/rest-api-pagination-in-spring
-    public List<TodoRequestPayload> getTodos(@RequestParam(required = false) String status,
-                                             @RequestParam(required = false) String keyword) {
+    @Transactional(readOnly = true)
+    public Page<TodoRequestPayload> getTodos(@RequestParam(required = false) String status,
+                                             @RequestParam(required = false) String keyword, Pageable pageable) {
         log.debug("Trying to get todos with/without filter: status - {}, keyword - {}", status, keyword);
         User user = getUserFromToken();
         List<Todo> todos;
@@ -69,8 +70,11 @@ public class TodoService {
         } else {
             todos = todoRepository.findAllByUser(user);
         }
-
-        return mapToTodoResponses(todos);
+        List<TodoRequestPayload> todoRequestPayloads = mapToTodoResponses(todos);
+        final int start = (int)pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), todoRequestPayloads.size());
+        final Page<TodoRequestPayload> page = new PageImpl<>(todoRequestPayloads.subList(start, end), pageable, todoRequestPayloads.size());
+        return page;
     }
 
     public Todo getTodoById(Long id) {
@@ -89,6 +93,7 @@ public class TodoService {
     }
 
     //PUT
+    @Transactional
     public Todo updateTodo(Todo todo) {
         log.debug("Trying to update todo {}", todo);
         Todo existingTodo = todoRepository.findById(todo.getId()).orElse(null);
@@ -103,7 +108,7 @@ public class TodoService {
         todoRepository.deleteById(id);
         return id + " id -> todo removed";
     }
-
+    @Transactional(readOnly = true)
     public List<TodoRequestPayload> getTodayTodos() {
         log.debug("Trying to get today todos");
         User user = getUserFromToken();
@@ -112,23 +117,7 @@ public class TodoService {
 
         return mapToTodoResponses(todos);
     }
-
-
-    // TODO MAPSTRUCT
-    private List<TodoRequestPayload> mapToTodoResponses(List<Todo> todos) {
-        log.debug("Trying to convert Todo to TodoResponse");
-        return todos.stream()
-                .map(todo -> new TodoRequestPayload(
-                        todo.getId(),
-                        todo.getHeader(),
-                        todo.getDescription(),
-                        todo.getTargetDate(),
-                        todo.getTodoStatus()
-                ))
-                .collect(Collectors.toList());
-    }
-
-
+    @Transactional(readOnly = true)
     public List<TodoRequestPayload> getOverdueTodos() {
         log.debug("Trying to get overdue todos");
         User user = getUserFromToken();
@@ -136,9 +125,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.findByUserAndTargetDateBeforeAndTodoStatusNot(user, today, TodoStatus.FINISH);
         return mapToTodoResponses(todos);
     }
-
-
-
+    @Transactional
     public ResponseEntity<String> statusChange(Long id, TodoStatus status) {
         log.debug("Trying to change status todo: id - {}, changedStatus - {}", id, status);
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new NotFoundException("Todo not found"));
@@ -157,23 +144,19 @@ public class TodoService {
     }
 
     // TODO MAPSTRUCT
-    private List<Todo> toTodos(List<TodoRequestPayload> todoResponses, User user) {
-        log.debug("Trying to convert list TodoResponse to list Todo");
-        return todoResponses.stream()
-                .map(todo -> toTodo(todo, user))
-                .collect(Collectors.toList());
+    private List<TodoRequestPayload> mapToTodoResponses(List<Todo> todos) {
+        log.debug("Trying to convert Todo to TodoResponse");
+        return todos.stream().map(
+                todo -> todoMapper.toDto(todo)
+        ).collect(Collectors.toList());
     }
 
     // TODO MAPSTRUCT
-    private Todo toTodo(TodoRequestPayload todoResponse, User user) {
-        log.debug("Trying to convert TodoResponse to Todo");
-        return Todo.builder()
-                .id(todoResponse.getId())
-                .header(todoResponse.getHeader())
-                .description(todoResponse.getDescription())
-                .targetDate(todoResponse.getTargetDate())
-                .todoStatus(todoResponse.getTodoStatus())
-                .user(user)
-                .build();
+    private List<Todo> toTodos(List<TodoRequestPayload> todoResponses, User user) {
+        log.debug("Trying to convert list TodoResponse to list Todo");
+        return todoResponses.stream()
+                .map(todo -> todoMapper.toTodo(todo))
+                .collect(Collectors.toList());
     }
+
 }

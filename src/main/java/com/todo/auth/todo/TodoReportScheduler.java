@@ -12,10 +12,8 @@ import java.util.List;
 @Slf4j
 @Component
 public class TodoReportScheduler {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private TodoReportService reportService;
 
