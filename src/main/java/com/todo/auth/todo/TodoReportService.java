@@ -4,8 +4,6 @@ import com.todo.auth.email.EmailService;
 import com.todo.auth.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,17 +12,15 @@ import java.util.List;
 @Slf4j
 @Service
 public class TodoReportService {
-
     @Autowired
-    private TodoService todoService;
-
+    private TodoRepository todoRepository;
     @Autowired
     private EmailService emailService;
 
     public boolean sendDailySummary(User user) {
         log.debug("Trying to send mail about report completed today's tasks");
         LocalDate today = LocalDate.now();
-        List<Todo> todos = todoService.findByUserAndTodoStatusAndTargetDate(user, TodoStatus.FINISH, today);
+        List<com.todo.auth.todo.Todo> todos = todoRepository.findByUserAndTodoStatusAndTargetDate(user, TodoStatus.FINISH, today);
         if (todos.isEmpty()) {
             return true;
         }

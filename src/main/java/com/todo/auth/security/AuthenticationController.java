@@ -2,7 +2,6 @@ package com.todo.auth.security;
 
 
 import com.todo.auth.email.EmailRequest;
-import com.todo.auth.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +13,14 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<com.todo.auth.security.AuthenticationResponse> register(
             @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    public ResponseEntity<com.todo.auth.security.AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
         AuthenticationResponse authenticate = service.authenticate(request);

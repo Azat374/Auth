@@ -2,8 +2,9 @@ package com.todo.auth.todo;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +34,9 @@ public class TodoController {
 
     //GET
     @GetMapping()
-    public ResponseEntity<List<TodoRequestPayload>> getTodos(@RequestParam(required = false) String status,
+    public Page<TodoRequestPayload> getTodos(Pageable pageable, @RequestParam(required = false) String status,
                                                              @RequestParam(required = false) String keyword){
-        List<TodoRequestPayload> todos = todoService.getTodos(status, keyword);
-        return ResponseEntity.ok(todos);
+        return todoService.getTodos(status, keyword, pageable);
     }
 
     @GetMapping("/by-name/{name}")

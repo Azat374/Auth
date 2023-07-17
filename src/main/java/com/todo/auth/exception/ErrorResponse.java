@@ -1,6 +1,7 @@
 package com.todo.auth.exception;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 

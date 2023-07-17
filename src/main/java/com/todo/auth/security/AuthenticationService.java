@@ -5,7 +5,9 @@ import com.todo.auth.email.EmailRequest;
 import com.todo.auth.email.EmailService;
 import com.todo.auth.exception.BadRequestException;
 import com.todo.auth.exception.NotFoundException;
-import com.todo.auth.user.*;
+import com.todo.auth.user.Role;
+import com.todo.auth.user.User;
+import com.todo.auth.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +32,7 @@ public class AuthenticationService {
     private String serverPort;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        log.debug("Trying to authorization {}", request);
+        log.debug("Trying to authorization {}", request.getEmail());
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())

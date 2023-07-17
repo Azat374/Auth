@@ -4,7 +4,11 @@ import com.todo.auth.user.User;
 import com.todo.auth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,8 +25,8 @@ public class AdminTodoController {
     }
 
     @GetMapping("/allTodos")
-    public Page<Todo> allTodos(@RequestParam("page") int page, @RequestParam("size") int size){
-        return todoService.allTodos();
+    public Page<Todo> allTodos(Pageable pageable){
+        return todoService.allTodos(pageable);
     }
 
     @GetMapping("/{id}")
