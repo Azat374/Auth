@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/todo")
 public class TodoController {
-    private final com.todo.auth.todo.TodoService todoService;
+    private final TodoService todoService;
     @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
@@ -21,12 +21,12 @@ public class TodoController {
 
     //POST
     @PostMapping
-    public com.todo.auth.todo.Todo addTodo(@RequestBody @Valid TodoRequestPayload Todo) {
+    public Todo addTodo(@RequestBody @Valid TodoRequestPayload Todo) {
         return todoService.saveTodo(Todo);
     }
 
     @PostMapping("/batch")
-    public List<com.todo.auth.todo.Todo> addTodos(@RequestBody @Valid @NotEmpty List<@Valid TodoRequestPayload> Todos) {
+    public List<Todo> addTodos(@RequestBody @Valid @NotEmpty List<@Valid TodoRequestPayload> Todos) {
 
         return todoService.saveTodos(Todos);
     }
@@ -40,7 +40,7 @@ public class TodoController {
     }
 
     @GetMapping("/by-name/{name}")
-    public com.todo.auth.todo.Todo findTodoByName(@PathVariable String name) {
+    public Todo findTodoByName(@PathVariable String name) {
         return todoService.getTodoByName(name);
     }
 
@@ -64,7 +64,7 @@ public class TodoController {
 
     //PUT
     @PutMapping("/update")
-    public com.todo.auth.todo.Todo updateTodo(@RequestBody Todo Todo)
+    public Todo updateTodo(@RequestBody Todo Todo)
     {
         System.out.println("UPDATED");
         return todoService.updateTodo(Todo);
