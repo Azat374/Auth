@@ -26,17 +26,17 @@ public class ApplicationConfig {
     private String smtpEmail;
     @Value("${spring.mail.password}")
     private String smtpPassword;
-    @Value("${spring.mail.host)")
+    @Value("${spring.mail.host}")
     private String smtpHost;
     @Value("${spring.mail.port}")
     private int smtpPort;
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable)")
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private String smtpStarttls;
-    @Value("${spring.mail.properties.mail.smtp.auth)")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private String smtpAuth;
-    @Value("${spring.mail.protocol)")
+    @Value("${spring.mail.protocol}")
     private String smtpTransportProtocol;
-    @Value("${spring.mail.properties.mail.debug)")
+    @Value("${spring.mail.properties.mail.debug}")
     private String smtpDebug;
 
     @Bean
