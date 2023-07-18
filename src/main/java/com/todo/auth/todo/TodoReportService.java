@@ -10,8 +10,13 @@ import com.todo.auth.email.EmailService;
 import com.todo.auth.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
@@ -20,14 +25,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
+@EnableRabbit
 public class TodoReportService {
     private final TodoRepository todoRepository;
     private final EmailService emailService;
-    private final RabbitTemplate rabbitTemplate;
 
-    public boolean sendDailySummary(User user) {
+
+    @RabbitListener(queues = "queue1")
+    public void sendDailySummary(User user) {
         log.debug("Trying to send mail about report completed today's tasks");
         String pdfFilePath = "src/main/resources/pdf/report.pdf";
         String FONT = "src/main/resources/Arial.ttf";
@@ -69,20 +76,16 @@ public class TodoReportService {
                     document.add(new Paragraph(t, font));
                 }
             }
-
-
-
-            rabbitTemplate.convertAndSend("testExchange", "testRoutingKey", "Ежедневное резюме выполненных задач");
             document.close();
         } catch (IOException | DocumentException e) {
             // Обработка исключений при создании PDF-файла
             e.printStackTrace();
         }
+
         String subject = "Todo list";
         String message = "Ежедневное резюме выполненных задач";
         String recipientEmail = user.getEmail(); // Замените на фактический адрес получателя
         emailService.sendMessageWithPdf(recipientEmail, subject, message, "pdf/report.pdf");
-        return true;
     }
 
 }

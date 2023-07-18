@@ -17,14 +17,15 @@ import java.util.List;
 public class TodoReportScheduler {
     private final UserRepository userRepository;
     private final TodoReportService reportService;
-    @Scheduled(cron = "0 29 11 * * ?")
+    private final RabbitTemplate rabbitTemplate;
+    @Scheduled(cron = "0 5 17 * * ?")
     private void sendAllSummary() {
         log.debug("Trying to send report to all users");
         List<User> users = userRepository.findAll();
         for (User user : users) {
             if (user.getEmail().equals("balgaliazik@gmail.com")) {// это чтобы только себе отправить(нужно удалить)
-                boolean res = reportService.sendDailySummary(user);
-                log.debug("Report for {} {} finished with status {}", user.getFirstname(), user.getLastname(), res);
+                rabbitTemplate.convertAndSend("testExchange", "testRoutingKey", user);
+                log.debug("Report for {} {} finished with status true", user.getFirstname(), user.getLastname());
             }
         }
 

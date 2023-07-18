@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@Import(RabbitConf.class)
 public class AuthApplication {
 
 	public static void main(String[] args) {
